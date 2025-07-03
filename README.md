@@ -1,99 +1,86 @@
-#  Microservice OCR avec Flask – Résumé de fonctionnement
+# OCR Microservice with Flask – Summary of Functionality
 
-## Comment exécuter le microservice
+## How to run the microservice
 
-### 1. Installer les dépendances système
+### 1. Install system dependencies
 
 - [✅ Tesseract OCR](https://github.com/tesseract-ocr/tesseract)
-- [✅ Poppler pour Windows](https://github.com/oschwartz10612/poppler-windows/releases)
+- [✅ Poppler for Windows](https://github.com/oschwartz10612/poppler-windows/releases)
 
- **Assurez-vous que** :
-- `tesseract.exe` et `pdftoppm.exe` sont dans votre `PATH` système.
-- Test rapide :
+**Make sure that**:  
+- `tesseract.exe` and `pdftoppm.exe` are in your system `PATH`.  
+- Quick test:
   ```bash
   tesseract --version
   pdftoppm -v
-  ```
-### 2. Installer les dépendances Python
+
+### 2.  Install Python dependencies
 ```bash
 pip install flask pytesseract pdf2image pillow
+pip install -r requirements.txt
 ```
-### 3. Lancer le service
+### 3.Set Together.ai API key
+```bash
+set TOGETHER_API_KEY=your_api
+````
+### 4.Start the service
 ```bash
 python app.py
 ```
-Par défaut, le service s’exécute sur :
+By default, the service runs at:
 ```bash
 http://localhost:5000/upload-form
 ```
 
-## Microservice OCR avec Flask – Phase 1
+## A working Flask microservice with
 
-###  Objectif  
-Créer un microservice web capable de :
-- recevoir des fichiers (images ou PDF),
-- extraire le texte via OCR (Tesseract),
-- retourner ce texte accompagné de métadonnées dans une réponse JSON.
+###  Objective  
+Create a web microservice capable of:
+
+- receiving files (images or PDFs),
+
+- extracting text via OCR (Tesseract),
+
+- returning the extracted text along with metadata in a JSON response.
 
 ###  Contexte  
-Ce microservice servira de **composant de base** dans un système **RAG** (Retrieval Augmented Generation), pour **extraire automatiquement le contenu textuel** des documents.
+This microservice will serve as a core component in a **RAG (Retrieval Augmented Generation)** system to automatically extract the textual content from documents.
 
-### Technologies utilisées
+### Technologies used
 - Python 3.x  
 - Flask *(framework web)*  
-- `pytesseract` *(wrapper Python de Tesseract OCR)*  
-- `pdf2image` *(conversion PDF → images)*  
-- `Pillow` *(traitement d’images)*  
-- **Tesseract OCR** *(moteur OCR open source)*  
-- **Poppler** *(outil système pour manipuler les PDF)*
+- `pytesseract` *(Python wrapper for Tesseract OCR)*  
+- `pdf2image` *(PDF to images conversion)*  
+- `Pillow` *(image processing)*  
+- **Tesseract OCR** *(open-source OCR engine)*  
+- **Poppler** *(system tool for PDF manipulation)*
   
-### Architectur
-```mermaid
-flowchart TD
-    Client["Client\n(Envoi fichiers POST /upload)"]
-    Flask["Flask Microservice"]
-    Save["Sauvegarde temporaire locale"]
-    CheckType["Détection type fichier"]
-    ImageProcess["OCR Tesseract\n(sur image)"]
-    PDFConvert["Conversion PDF → Images\n(pdf2image)"]
-    PDFOCR["OCR Tesseract\n(sur chaque image)"]
-    ConcatText["Concaténation texte OCR"]
-    JSONResp["Réponse JSON\n(liste d’objets)"]
 
-    Client -->|POST /upload| Flask
-    Flask --> Save
-    Save --> CheckType
-    CheckType -->|Image| ImageProcess
-    CheckType -->|PDF| PDFConvert
-    PDFConvert --> PDFOCR
-    ImageProcess --> ConcatText
-    PDFOCR --> ConcatText
-    ConcatText --> JSONResp
-````
+###  Upload and save
 
-###  Upload et sauvegarde
+- Retrieve files via `request.files` (key `files`).  
+- Temporarily save locally  (e.g : `/tmp`).  
 
-- Récupération des fichiers via `request.files` (clé `files`).  
-- Sauvegarde temporaire locale (ex : `/tmp`).  
+###  File type and metadata
 
-###  Type et métadonnées
+- Detect MIME type (`image/png`, `application/pdf`) using `mimetypes`.  
+- Extract file size using `os.stat`.  
+- Use temporary file path for processing..  
 
-- Détection du type MIME (`image/png`, `application/pdf`) avec `mimetypes`.  
-- Taille extraite via `os.stat`.  
-- Chemin temporaire utilisé pour le traitement.  
+###  OCR extraction
 
-###  Extraction OCR
+- If image → apply Tesseract directly.
+- If PDF → convert pages to images via `pdf2image.convert_from_path`.  
+- Apply Tesseract OCR on each image.
 
-- Si image → Tesseract appliqué directement.  
-- Si PDF → conversion des pages en images via `pdf2image.convert_from_path`.  
-- Tesseract appliqué à chaque image.  
-- Texte concaténé.  
-- Nombre de pages déterminé automatiquement.
+- Concatenate extracted text.
+
+- Automatically determine number of pages.
 
 ---
 
 
-###  Exemple de réponse JSON
+###  Example JSON response
 ```json
 [
   {
@@ -106,6 +93,101 @@ flowchart TD
   }
 ]
 ````
+# Logic to classify documents using Together.ai’s LLM
+
+## Overview
+
+After extracting text from the uploaded document via OCR or PDF processing, the service sends the extracted text to Together.ai’s large language model (LLM) for automatic document classification.
+
+## How it works
+
+### Prepare the prompt
+
+The extracted text is inserted into a prompt asking the model to classify it into exactly one of the predefined categories:
+
+```text
+You are a professional document classifier.
+
+Classify the following text into exactly one of the following categories:
+- resume
+- contract
+- invoice
+- academic paper
+- letter
+- policy
+- report
+
+Respond ONLY with the category name (e.g. "contract").
+
+Text:
+"""
+[extracted text here]
+"""
+````
+### Send API request
+Créer un microservice web capable de :
+- **URL**: https://api.together.xyz/inference ,
+- **Method**: POST,
+- **Headers**:
+   - Authorization: Bearer <TOGETHER_API_KEY>
+   - Content-Type: application/json
+- **Body parameters:**
+   - model: "mistralai/Mixtral-8x7B-Instruct-v0.1"
+   - prompt: the prompt above with inserted text
+   - max_tokens: 10
+   - top_p: 0.9
+   - temperature: 0.3
+### Process response
+The LLM responds with text containing the predicted category. The service extracts the category by:
+
+- Parsing the JSON response.
+
+- Extracting the generated text.
+
+- Matching it against the known categories (resume, contract, invoice, academic paper, letter, policy, report).
+
+- Returning the matched category or "unknown" if no match found.
+
+
+  
+  
+
+
+
+## OCR & LLM Classification Architecture
+```mermaid
+flowchart TD
+    Client["Client\n(Uploads files via POST /upload)"]
+    Flask["Flask Microservice"]
+    Save["Temporary local save"]
+    CheckType["Detect file type"]
+    ImageProcess["Tesseract OCR\n(on image)"]
+    PDFConvert["PDF → Images conversion\n(pdf2image)"]
+    PDFOCR["Tesseract OCR\n(on each image)"]
+    ConcatText["Concatenate OCR text"]
+    Classify["Classification via\nTogether.ai LLM API"]
+    JSONResp["JSON response\n(list of objects)"]
+
+    Client -->|POST /upload| Flask
+    Flask --> Save
+    Save --> CheckType
+    CheckType -->|Image| ImageProcess
+    CheckType -->|PDF| PDFConvert
+    PDFConvert --> PDFOCR
+    ImageProcess --> ConcatText
+    PDFOCR --> ConcatText
+    ConcatText --> Classify
+    Classify --> JSONResp
+
+````
+**Brief explanation:**
+- After extracting OCR text (ConcatText), the text is sent to the Classify component that calls the Together.ai API to classify the document.
+- The classification result is then included in the final JSON response.
+
+
+
+
+
 
 
 

@@ -4,13 +4,13 @@ from PIL import Image
 import os
 import tempfile
 import mimetypes
-
+from PyPDF2 import PdfReader
 def ocr_image(image_path):
     text = pytesseract.image_to_string(Image.open(image_path))
     return text
 
 def process_pdf(file_path):
-    poppler_path = r"C:\Users\wsi\poppler-24.08.0\Library\bin"  # mets ici le chemin où tu as installé poppler
+    poppler_path = r"C:\Users\wsi\poppler-24.08.0\Library\bin"  
     images = convert_from_path(file_path, poppler_path=poppler_path)
     all_text = ''
 
@@ -32,4 +32,3 @@ def get_file_metadata(file_path):
         "file_size": file_stat.st_size,
         "file_type": file_type
     }
-
