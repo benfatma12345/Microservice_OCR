@@ -1,0 +1,16 @@
+Flask
+pytesseract
+pdf2image
+Pillow
+python-magic
+requests
+PyPDF2
+together
+python-dotenv
+sentence-transformers
+sqlalchemy
+psycopg2
+pgvector
+python-docx
+fastapi
+uvicorn
