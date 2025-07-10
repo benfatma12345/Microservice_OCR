@@ -1,6 +1,6 @@
-# Document Preparation and Embedding Pipeline
+# Steps 2 : Document Preparation and Embedding Pipeline
 
-## Detailed Steps
+## Detailed Steps 
 
 ### 1. Text Extraction
 
@@ -74,7 +74,39 @@ A **SQLAlchemy** model corresponds to a Python class linked to a SQL table.
   ```` 
   python test_post_upload.py
   ````
+# Steps 3: Query Processing and Semantic Search
+## FastAPI-based Semantic Search API
+- 1. Accepts user question (natural language)
+- 2. Embeds it with the same transformer model
+- 3. Performs vector similarity search using pgvector
 
+- 4. Returns top-k (default: 5) matching chunks for LLM prompt building
+
+### Commands
+- **Run FastAPI for querying:**
+````bash
+  uvicorn main:app --reload
+````
+- **Sample Query via cURL**
+  ````bash 
+    curl -X POST http://localhost:8000/semantic-search \
+     -H "Content-Type: application/json" \
+     -d '{"question": "What is the policy for paid leave?",
+  "top_k": 3}'
+  ````
+  - **Response:**
+   ````bash 
+    [
+      {
+        "file_name":"Leave-Policy-Template-for-Human-Resources.pdf",
+         "chunk_index":0,
+         "text_chunk":"LEAVE POLICY\nTEMPLATE FOR\nHR\nPROFESSIONALS\nn= 7\nBy\nHRGURUJI\nwww.hrguruji.com\nLEAVE POLICY\nOBJECTIVE\nThe objective of this policy is to regulate all forms of leave that are accrued and due to employees\nas a benefit, and to outline procedures to be followed for the granting and taking of such leave.\nPolicy provisions apply to all employees, that is, permanent employees, temporary employees and\ncasual employees.\nPOLICY\nThe following leave policy procedures will apply:",
+        "doc_metadata":null,
+        "similarity_score":1.5923
+      
+     
+      }
+    ]
 
 
   

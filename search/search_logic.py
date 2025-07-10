@@ -1,28 +1,31 @@
 from sqlalchemy import text
-from db.init_db import engine
-from utils.embedding_utils import model
+from db import engine 
+from utils.embedding_utils import model as embedding_model
+from sentence_transformers import SentenceTransformer
+
+
+
+
 
 def search_similar_chunks(question: str, top_k: int = 5):
     question_embedding = embedding_model.encode(question).tolist()
+    question_embedding_str = f"[{', '.join(map(str, question_embedding))}]"
 
-    sql = text("""
+    # on injecte embedding directement dans la requête
+    sql = f"""
         SELECT 
             file_name,
             chunk_index,
             text_chunk,
             doc_metadata,
-            1 - (embedding <#> :embedding) AS similarity
+            1 - (embedding <#> '{question_embedding_str}'::vector) AS similarity
         FROM document_chunks
-        ORDER BY embedding <#> :embedding
-        LIMIT :top_k
-    """)
+        ORDER BY embedding <#> '{question_embedding_str}'::vector
+        LIMIT {top_k}
+    """
 
     with engine.connect() as conn:
-        result = conn.execute(sql, {
-            "embedding": question_embedding,
-            "top_k": top_k
-        })
-
+        result = conn.execute(text(sql))
         rows = result.fetchall()
 
     return [

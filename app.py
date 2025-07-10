@@ -33,7 +33,7 @@ def process_documents():
                 chunk_index=i,
                 text_chunk=chunk,
                 embedding=emb,
-                metadata=metadata
+                doc_metadata=metadata 
             )
             session.add(doc)
         session.commit()
