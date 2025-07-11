@@ -1,5 +1,5 @@
 from sqlalchemy import text
-from db import engine 
+from db.db import engine 
 from utils.embedding_utils import model as embedding_model
 from sentence_transformers import SentenceTransformer
 
