@@ -10,7 +10,9 @@ test_files = [
     "hr_documents/Contrat_service.docx",
     "hr_documents/Leave-Policy-Template-for-Human-Resources.pdf",
     "hr_documents/HR-Guide_-Policy-and-Procedure-Template.pdf",
-    "hr_documents/Sample Employee Handbook - National Council of Nonprofits.pdf",
+    "hr_documents/Paid-Maternity-Leave-Policy-Template-v3.pdf",
+   "hr_documents/parental-leave-toolkit.pdf",
+
     "hr_documents/Sample-Human Resources Memo.pdf",
     "hr_documents/Valve_NewEmployeeHandbook.pdf",
     

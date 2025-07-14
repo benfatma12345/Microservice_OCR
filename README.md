@@ -303,11 +303,94 @@ Once started, the /ask endpoint will be available for queries.
     ]
 }
 ```` 
+## Step 6: Implementation of Multi-turn Dialogue Memory in the RAG System
+
+### 1. Objective
+Allow Purpella to handle follow-up questions by keeping track of the last 3 Q&A turns **per user session**. This makes conversations more natural and context-aware.
 
 
+### 2. Database Schema for Memory
+```sql
+CREATE TABLE conversation_memory (
+    id SERIAL PRIMARY KEY,
+    session_id TEXT NOT NULL,
+    turn_number INTEGER NOT NULL,
+    question TEXT NOT NULL,
+    answer TEXT NOT NULL,
+    timestamp TIMESTAMPTZ DEFAULT NOW()
+);
+````
+### 3. FastAPI Endpoint Update /ask
+- Accept session_id in request.
 
+- Fetch last 3 Q&A pairs from conversation_memory by session_id.
+
+- Format them into the "Conversation history" section.
+
+- Generate prompt and call LLM.
+
+- Save current turn into conversation_memory.
+### 4. Ask Questions via Postman 
+
+   - POST /ask
   
+````bash 
+     POST http://localhost:8000/ask
+     "Content-Type: application/json" \
+     {
+       "session_id": "abc123",
+        "question": "What is the annual   leave policy?",
+       "top_k": 3
+}
 
-  
 
+````
+   - **Response:**
+````bash
+{
+    "answer": " Our company's remote work policy is outlined in our POLICY AGAINST WORKPLACE HARASSMENT. While we do have a remote work policy, please note that our HOURS OF WORK, ATTENDANCE AND PUNCTUALITY policy applies to both in-office and remote employees. If you have any questions or concerns about remote work, please feel free to reach out to me or consult our ECONOMIC BENEFITS AND INSURANCE policies for more information. Remember, we are committed to creating a safe and respectful workplace for all employees.",
+    "context": [
+        {
+            "file_name": "Sample Employee Handbook - National Council of Nonprofits.pdf",
+            "chunk_index": 6,
+            "text_chunk": "POLICY AGAINST WORKPLACE HARASSMENT. ......ccccsssssssseseeeseseseseeeeeeeseneeeeeeseaeeeeeeee\nSOLICITATION\nHOURS OF WORK, ATTENDANCE AND PUNCTUALITY\nA. Hours of Work\nB. Attendance and Punctuality...\nC. Overtime\nEMPLOYMENT POLICIES AND PRACTICES\nA. Definition of Terms.....\nPOSITION DESCRIPTION AND SALARY ADMINISTRATION ...\nWORK REVIEW ......csssssssssseseseseseseseseecseseseussesesesesesesesesesesesesescessssessseseseseseseseseseaeseseaeseeeaeaeeeanes\nECONOMIC BENEFITS AND INSURANCE...",
+            "doc_metadata": {
+                "file_type": "application/pdf",
+                "file_size": 296436
+            },
+            "similarity_score": 1.4847
+        },
+        {
+            "file_name": "Leave-Policy-Template-for-Human-Resources.pdf",
+            "chunk_index": 31,
+            "text_chunk": "policies, the MM will use his/her discretion regarding those alternative provisions and measures. XYZ\nmay also, at its discretion, prescribe special leave privileges for an employee or classes of\nemployees, and also make recommendations and givedirections that are not covered by the above\npolicies.\nFor More HR Topics, Visit www.hrguruji.com\nFor More HR Topics like\nI. Important policies for HR Department - https://www.hrguruji.com/14-important-hr-policies-for-\navoiding-legal-disputes/",
+            "doc_metadata": null,
+            "similarity_score": 1.4728
+        },
+        {
+            "file_name": "hr_policy.pdf",
+            "chunk_index": 31,
+            "text_chunk": "policies, the MM will use his/her discretion regarding those alternative provisions and measures. XYZ\nmay also, at its discretion, prescribe special leave privileges for an employee or classes of\nemployees, and also make recommendations and givedirections that are not covered by the above\npolicies.\nFor More HR Topics, Visit www.hrguruji.com\nFor More HR Topics like\nI. Important policies for HR Department - https://www.hrguruji.com/14-important-hr-policies-for-\navoiding-legal-disputes/",
+            "doc_metadata": null,
+            "similarity_score": 1.4728
+        }
+    ]
+}
+```` 
+   - **DELETE /reset_session/{session_id}**
+````bash 
+     DELETE http://localhost:8000/reset_session/abc123
+    
+
+````
+-   **Response:**
+````bash
+ {
+    "message": "Session 'abc123' reset successfully. (1 turns deleted)"
+}
+````
+### 5. Ask Questions via Swagger UI
+
+Disponible automatiquement à :
+**http://localhost:8000/docs**
 
