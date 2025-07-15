@@ -41,6 +41,7 @@ class QueryInput(BaseModel):
 class AskResponse(BaseModel):
     answer: str
     context: List[dict]
+    prompt: str
 
 class ResetResponse(BaseModel):
     message: str
@@ -98,7 +99,8 @@ Purpella:"""
 
         return {
             "answer": answer,
-            "context": chunks
+            "context": chunks,
+            "prompt": prompt
         }
 
     except Exception as e:
