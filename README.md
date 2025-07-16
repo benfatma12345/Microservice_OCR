@@ -368,3 +368,35 @@ CREATE TABLE conversation_memory (
 Disponible automatiquement à :
 **http://localhost:8000/docs**
 
+
+
+## Overall Purpose of the Code
+-  Accepts an .mp3 file containing a meeting or voice conversation.
+
+
+-️ Automatically converts the audio to text using Whisper.
+
+- Then intelligently summarizes the transcribed text into structured key points using the Mistral 7B model (via Together.ai).
+
+- Returns the result as a structured JSON response that can be used in an HR application, dashboard, or API.                                  
+  ```graph
+  +---------------------------+
+|         Utilisateur       |
+|   (upload fichier ou texte)|
++------------+--------------+
+             |
+             ▼
++------------+--------------+
+|       FastAPI Endpoint     |
+|  /summarize_meeting        |
++------------+--------------+
+             |
+     ┌───────┴────────┐
+     ▼                ▼
+[transcription]   [texte brut]
+     ▼                |
+     └────>[ Résumé avec Together.ai ]
+                    |
+                    ▼
+          [ JSON structuré résumé ]
+````
