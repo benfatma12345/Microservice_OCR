@@ -378,25 +378,13 @@ Disponible automatiquement à :
 
 - Then intelligently summarizes the transcribed text into structured key points using the Mistral 7B model (via Together.ai).
 
-- Returns the result as a structured JSON response that can be used in an HR application, dashboard, or API.                                  
-  ```graph
-  +---------------------------+
-|         Utilisateur       |
-|   (upload fichier ou texte)|
-+------------+--------------+
-             |
-             ▼
-+------------+--------------+
-|       FastAPI Endpoint     |
-|  /summarize_meeting        |
-+------------+--------------+
-             |
-     ┌───────┴────────┐
-     ▼                ▼
-[transcription]   [texte brut]
-     ▼                |
-     └────>[ Résumé avec Together.ai ]
-                    |
-                    ▼
-          [ JSON structuré résumé ]
-````
+- Returns the result as a structured JSON response that can be used in an HR application, dashboard, or API.   
+- Voici un résumé clair des différences entre whisper (original d'OpenAI) et faster-whisper :
+ ## Comparaison de performance : `whisper` vs `faster-whisper`
+
+| Critère            | `whisper`                            | `faster-whisper`                              |
+|--------------------|--------------------------------------|-----------------------------------------------|
+| **Vitesse**         | Plus lent                            | ⚡ 2x à 5x plus rapide                         |
+| **Consommation RAM**| Haute (modèles lourds)               | Optimisé, supporte CPU bas/moyens             |
+| **Support GPU**     | Oui (via PyTorch)                    | Oui (via CTranslate2, CUDA, TensorRT)         |
+| **Multithreading**  | Limité                               |  Oui, très bien optimisé                    |
