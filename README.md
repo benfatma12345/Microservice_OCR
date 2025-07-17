@@ -370,21 +370,82 @@ Disponible automatiquement à :
 
 
 
-## Overall Purpose of the Code
+## Step 7:  Meeting Transcript Analyzer - OCR_Microservice Extension
+### 1. Objectf
 -  Accepts an .mp3 file containing a meeting or voice conversation.
+-  Automatically converts the audio to text using Whisper.
 
-
--️ Automatically converts the audio to text using Whisper.
 
 - Then intelligently summarizes the transcribed text into structured key points using the Mistral 7B model (via Together.ai).
 
-- Returns the result as a structured JSON response that can be used in an HR application, dashboard, or API.   
-- Voici un résumé clair des différences entre whisper (original d'OpenAI) et faster-whisper :
+- Returns the result as a structured JSON response that can be used in an HR application, dashboard, or API.  
+
+### 2.  Input Handling
+
+- Detect whether input is:
+  - `.mp3` audio file.
+  - Text transcript (raw string or text file).
+- Route input accordingly:
+  - Transcribe if it's audio.
+  - Process directly if it's text.
+
+---
+
+### 3.  Transcription (if input is MP3)
+
+- Use **Whisper (open-source)** / **faster-whisper** for local audio transcription.
+- **No paid or external API services**.
+- Save transcript as `.txt` locally for reference.
+- Pass transcript to LLM summarization module.
+ 
+### Voici un résumé clair des différences entre whisper (original d'OpenAI) et faster-whisper :
  ## Comparaison de performance : `whisper` vs `faster-whisper`
 
 | Critère            | `whisper`                            | `faster-whisper`                              |
 |--------------------|--------------------------------------|-----------------------------------------------|
-| **Vitesse**         | Plus lent                            | ⚡ 2x à 5x plus rapide                         |
+| **Vitesse**         | Plus lent                            | 2x à 5x plus rapide                         |
 | **Consommation RAM**| Haute (modèles lourds)               | Optimisé, supporte CPU bas/moyens             |
 | **Support GPU**     | Oui (via PyTorch)                    | Oui (via CTranslate2, CUDA, TensorRT)         |
 | **Multithreading**  | Limité                               |  Oui, très bien optimisé                    |
+
+- **Install dependencies:**`faster-whisper`
+  
+  ````bash
+  pip install -r requirements.txt`
+  or
+  pip install faster-whisper
+  ````
+### 4. Text Analysis with LLM
+
+Use **Together.ai’s Mistral 7B** model to generate a structured summary containing the following fields:
+#### ➤ `general_topic_summary`
+> A single sentence that summarizes the overall meeting purpose or topic.
+
+#### ➤ `meeting_minutes`
+> A chronological list of key points discussed during the meeting.
+
+#### ➤ `discussed_tasks`
+> List of actionable tasks, optionally with assignee (if explicitly mentioned).
+
+- **Lancer le serveur FastAPI**
+````bash 
+  uvicorn main:app --reload
+  ````
+- **Tester dans le navigateur ou Postman**
+   - Accès à la documentation interactive :
+    http://127.0.0.1:8000/docs
+   - Ask Questions via Postman
+   ````bash
+   POST http://127.0.0.1:8000/summarize_meeting
+   TYPE form-data
+      Clé : mp3_file (type : File)
+
+      Or transcript (type : Text)
+  ````
+ - **Response:**
+  ````bash
+  {
+    "general_topic_summary":"Review of Q2 performance and planning for Q3","meeting_minutes":["Review of Q2 performance","Discussion on Q3 road map","Analysis of customer feedback from last quarter","Postponement of onboarding redesign discussion"],
+     "discussed_tasks":[{"task":"Prepare Q3 road map","assigned_to":"Sarah"},{"task":"Analyze customer feedback from last quarter","assigned_to":"Ali"}],"postponed_points":["Onboarding redesign discussion"] 
+  }````
+  
