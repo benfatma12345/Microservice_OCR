@@ -1,4 +1,5 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, UploadFile, File, Form
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from dotenv import load_dotenv
@@ -11,6 +12,7 @@ from Api.together_llm import ask_llm
 
 import uvicorn
 
+from Api.meeting_summary import transcribe_audio, summarize_meeting_text, MeetingSummary
 # Charger variables d’environnement
 load_dotenv()
 
@@ -22,6 +24,15 @@ app = FastAPI(
     title="Purpella RAG API",
     description="API de RAG avec mémoire multi-tours pour l’assistante RH Purpella.",
     version="1.0.0"
+)
+
+
+# Autoriser CORS pour tests
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Dépendance de session SQLAlchemy
@@ -41,6 +52,7 @@ class QueryInput(BaseModel):
 class AskResponse(BaseModel):
     answer: str
     context: List[dict]
+    prompt: str
 
 class ResetResponse(BaseModel):
     message: str
@@ -98,7 +110,8 @@ Purpella:"""
 
         return {
             "answer": answer,
-            "context": chunks
+            "context": chunks,
+            "prompt": prompt
         }
 
     except Exception as e:
@@ -111,6 +124,31 @@ def reset_session(session_id: str, db: Session = Depends(get_db)):
         deleted = db.query(ConversationMemory).filter(ConversationMemory.session_id == session_id).delete()
         db.commit()
         return {"message": f"Session '{session_id}' reset successfully. ({deleted} turns deleted)"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+
+
+
+
+# ----------- ENDPOINT /summarize_meeting -----------
+@app.post("/summarize_meeting", response_model=MeetingSummary, tags=["Meeting Analyzer"])
+async def summarize_meeting(
+    mp3_file: UploadFile = File(None),
+    transcript: str = Form(None)
+):
+    try:
+        if mp3_file:
+            text = transcribe_audio(mp3_file)
+        elif transcript:
+            text = transcript
+        else:
+            raise HTTPException(status_code=400, detail="Provide either mp3_file or transcript text.")
+
+        summary = summarize_meeting_text(text)
+        return summary
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

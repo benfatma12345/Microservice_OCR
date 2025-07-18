@@ -14,3 +14,7 @@ pgvector
 python-docx
 fastapi
 uvicorn
+whisper
+python-multipart
+torch
+pydantic

@@ -348,33 +348,7 @@ CREATE TABLE conversation_memory (
    - **Response:**
 ````bash
 {
-    "answer": " Our company's remote work policy is outlined in our POLICY AGAINST WORKPLACE HARASSMENT. While we do have a remote work policy, please note that our HOURS OF WORK, ATTENDANCE AND PUNCTUALITY policy applies to both in-office and remote employees. If you have any questions or concerns about remote work, please feel free to reach out to me or consult our ECONOMIC BENEFITS AND INSURANCE policies for more information. Remember, we are committed to creating a safe and respectful workplace for all employees.",
-    "context": [
-        {
-            "file_name": "Sample Employee Handbook - National Council of Nonprofits.pdf",
-            "chunk_index": 6,
-            "text_chunk": "POLICY AGAINST WORKPLACE HARASSMENT. ......ccccsssssssseseeeseseseseeeeeeeseneeeeeeseaeeeeeeee\nSOLICITATION\nHOURS OF WORK, ATTENDANCE AND PUNCTUALITY\nA. Hours of Work\nB. Attendance and Punctuality...\nC. Overtime\nEMPLOYMENT POLICIES AND PRACTICES\nA. Definition of Terms.....\nPOSITION DESCRIPTION AND SALARY ADMINISTRATION ...\nWORK REVIEW ......csssssssssseseseseseseseseecseseseussesesesesesesesesesesesesescessssessseseseseseseseseseaeseseaeseeeaeaeeeanes\nECONOMIC BENEFITS AND INSURANCE...",
-            "doc_metadata": {
-                "file_type": "application/pdf",
-                "file_size": 296436
-            },
-            "similarity_score": 1.4847
-        },
-        {
-            "file_name": "Leave-Policy-Template-for-Human-Resources.pdf",
-            "chunk_index": 31,
-            "text_chunk": "policies, the MM will use his/her discretion regarding those alternative provisions and measures. XYZ\nmay also, at its discretion, prescribe special leave privileges for an employee or classes of\nemployees, and also make recommendations and givedirections that are not covered by the above\npolicies.\nFor More HR Topics, Visit www.hrguruji.com\nFor More HR Topics like\nI. Important policies for HR Department - https://www.hrguruji.com/14-important-hr-policies-for-\navoiding-legal-disputes/",
-            "doc_metadata": null,
-            "similarity_score": 1.4728
-        },
-        {
-            "file_name": "hr_policy.pdf",
-            "chunk_index": 31,
-            "text_chunk": "policies, the MM will use his/her discretion regarding those alternative provisions and measures. XYZ\nmay also, at its discretion, prescribe special leave privileges for an employee or classes of\nemployees, and also make recommendations and givedirections that are not covered by the above\npolicies.\nFor More HR Topics, Visit www.hrguruji.com\nFor More HR Topics like\nI. Important policies for HR Department - https://www.hrguruji.com/14-important-hr-policies-for-\navoiding-legal-disputes/",
-            "doc_metadata": null,
-            "similarity_score": 1.4728
-        }
-    ]
+    {"answer":" Our Foundation offers comprehensive vacation time policies for both part-time and full-time employees, as well as other forms of leave as needed. Part-time employees are entitled to one day per month in lieu of vacation pay and a minimum of two weeks of vacation time. Full-time employees are entitled to a minimum of four weeks of paid vacation time per year, as well as other forms of leave such as sick leave, personal leave, parental leave, and compassionate care leave. Our annual leave policy is designed to ensure that employees have access to the time and resources they need to maintain their health, well-being, and job performance. If you have any questions or concerns about your vacation time entitlements or our leave policy, please don't hesitate to contact me for further information.","context":[{"file_name":"Valve_NewEmployeeHandbook.pdf","chunk_index":108,"text_chunk":"Doesn’t Work?\nSometimes, the philosophy and methods outlined in this\nbook don’t match perfectly with how things are going day\nto day. But we’re confident that even when problems persist\nfor a while, Valve roots them out.\nAs you see it, are there areas of the company in which\nthe ideals in this book are realized more fully than others?\nWhat should we do about that? Are those differences a\ngood thing? What would you change? This handbook\ndescribes the goals we believe in. If you find yourself in","doc_metadata":{"file_type":"application/pdf","file_size":26380552},"similarity_score":1.2708}],"prompt":"You are Purpella, a helpful and professional HR assistant.\n\nThis is a conversation between an employee and Purpella. Use the previous turns to understand the context and answer naturally and clearly.\n\nConversation history:\nUser: What about part-time employees?\nPurpella:  As a part-time employee, you are entitled to one day per month in lieu of 4% vacation pay. The day is equivalent to the normal number of hours regularly worked by you. Additionally, you are required to take a minimum of two weeks of vacation time, either paid or unpaid. Is there anything else you would like to know about vacation time for part-time employees?\n\nUser:  Does that include public holidays?\nPurpella:  Yes, our Foundation observes the following paid holidays, as per our policy and procedure statement:\n\n* New Year's Day\n* Good Friday\n* Easter Monday\n* Victoria Day\n* Canada Day\n* Civic Holiday\n* Labour Day\n* Thanksgiving Day\n* Christmas Day\n* Boxing Day\n\nIf you are a part-time employee not scheduled to work on a public holiday, you will not receive holiday pay in accordance with the Employment Standards Act.\n\nPlease let me know if you have any other questions or concerns about vacation time for part-time employees.\n\nUser: What is the annual leave policy for full-time employees?\nPurpella:  Our Foundation offers a comprehensive leave policy for full-time employees, which is designed to provide employees with adequate time off to rest, recharge, and balance their work and personal lives.\n\nUnder our annual leave policy, full-time employees are entitled to a minimum of 4 weeks of paid vacation time per year, in addition to any other forms of leave that may be available to them. This time can be taken in one continuous block, or it can be broken up into shorter intervals throughout the year.\n\nIn addition to vacation time, full-time employees may be eligible for other forms of leave, such as sick leave, personal leave, parental leave, and compassionate care leave, depending on their individual circumstances and needs.\n\nTo use vacation time, full-time employees must provide at least 2 weeks' notice to their supervisor, and may be required to complete any outstanding work or cover their absence during their time off.\n\nEmployees who wish to take time off for non-vacation purposes, such as personal or family matters, may be eligible for personal leave under our leave policy. To request personal leave, employees must provide at least 2 weeks' notice to their supervisor and provide supporting documentation.\n\nOverall, our annual leave policy is designed to ensure that full-time employees have access to the time and resources they need to maintain their health, well-being, and job performance. If you have any questions or concerns about your annual leave entitlements or our leave policy, please do not hesitate to contact me for further information.\n\nRelevant document context:\n- Doesn’t Work?\nSometimes, the philosophy and methods outlined in this\nbook don’t match perfectly with how things are going day\nto day. But we’re confident that even when problems persist\nfor a while, Valve roots them out.\nAs you see it, are there areas of the company in which\nthe ideals in this book are realized more fully than others?\nWhat should we do about that? Are those differences a\ngood thing? What would you change? This handbook\ndescribes the goals we believe in. If you find yourself in\n\nCurrent question:\nUser: Can you summarize it all in one paragraph?\n\nPurpella:"}
 }
 ```` 
    - **DELETE /reset_session/{session_id}**
@@ -394,3 +368,84 @@ CREATE TABLE conversation_memory (
 Disponible automatiquement à :
 **http://localhost:8000/docs**
 
+
+
+## Step 7:  Meeting Transcript Analyzer - OCR_Microservice Extension
+### 1. Objectf
+-  Accepts an .mp3 file containing a meeting or voice conversation.
+-  Automatically converts the audio to text using Whisper.
+
+
+- Then intelligently summarizes the transcribed text into structured key points using the Mistral 7B model (via Together.ai).
+
+- Returns the result as a structured JSON response that can be used in an HR application, dashboard, or API.  
+
+### 2.  Input Handling
+
+- Detect whether input is:
+  - `.mp3` audio file.
+  - Text transcript (raw string or text file).
+- Route input accordingly:
+  - Transcribe if it's audio.
+  - Process directly if it's text.
+
+---
+
+### 3.  Transcription (if input is MP3)
+
+- Use **Whisper (open-source)** / **faster-whisper** for local audio transcription.
+- **No paid or external API services**.
+- Save transcript as `.txt` locally for reference.
+- Pass transcript to LLM summarization module.
+ 
+### Voici un résumé clair des différences entre whisper (original d'OpenAI) et faster-whisper :
+ ## Comparaison de performance : `whisper` vs `faster-whisper`
+
+| Critère            | `whisper`                            | `faster-whisper`                              |
+|--------------------|--------------------------------------|-----------------------------------------------|
+| **Vitesse**         | Plus lent                            | 2x à 5x plus rapide                         |
+| **Consommation RAM**| Haute (modèles lourds)               | Optimisé, supporte CPU bas/moyens             |
+| **Support GPU**     | Oui (via PyTorch)                    | Oui (via CTranslate2, CUDA, TensorRT)         |
+| **Multithreading**  | Limité                               |  Oui, très bien optimisé                    |
+
+- **Install dependencies:**`faster-whisper`
+  
+  ````bash
+  pip install -r requirements.txt`
+  or
+  pip install faster-whisper
+  ````
+### 4. Text Analysis with LLM
+
+Use **Together.ai’s Mistral 7B** model to generate a structured summary containing the following fields:
+#### ➤ `general_topic_summary`
+> A single sentence that summarizes the overall meeting purpose or topic.
+
+#### ➤ `meeting_minutes`
+> A chronological list of key points discussed during the meeting.
+
+#### ➤ `discussed_tasks`
+> List of actionable tasks, optionally with assignee (if explicitly mentioned).
+
+- **Lancer le serveur FastAPI**
+````bash 
+  uvicorn main:app --reload
+  ````
+- **Tester dans le navigateur ou Postman**
+   - Accès à la documentation interactive :
+    http://127.0.0.1:8000/docs
+   - Ask Questions via Postman
+   ````bash
+   POST http://127.0.0.1:8000/summarize_meeting
+   TYPE form-data
+      Clé : mp3_file (type : File)
+
+      Or transcript (type : Text)
+  ````
+ - **Response:**
+  ````bash
+  {
+    "general_topic_summary":"Review of Q2 performance and planning for Q3","meeting_minutes":["Review of Q2 performance","Discussion on Q3 road map","Analysis of customer feedback from last quarter","Postponement of onboarding redesign discussion"],
+     "discussed_tasks":[{"task":"Prepare Q3 road map","assigned_to":"Sarah"},{"task":"Analyze customer feedback from last quarter","assigned_to":"Ali"}],"postponed_points":["Onboarding redesign discussion"] 
+  }````
+  
